@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Cyber Suit Warriors: Monster Emotions</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #7C4DFF;
+  --primary-dark: #651FFF;
+  --secondary: #00E5A0;
+  --secondary-dark: #00C896;
+  --accent: #FFEA00;
+  --accent-glow: #FFF176;
+  --bg-dark: #1A1033;
+  --bg-card: #2D1F4E;
+  --bg-card2: #3D2A5C;
+  --text-light: #E8E0F0;
+  --text-muted: #B0A0C8;
+  --scary-red: #FF5252;
+  --friendly-green: #69F0AE;
+  --silver: #CE93D8;
+  --gold: #FFD54F;
+  --success: #69F0AE;
+  --warning: #FFAB40;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-light);
+  margin: 0; padding: 0;
+  overflow-x: hidden;
+}
+h1, h2, h3, .step-badge { font-family: 'Fredoka One', cursive; }
+
+/* Progress Bar */
+#progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(26,16,51,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid var(--primary);
+  padding: 8px 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+#progress-steps { display: flex; gap: 6px; flex: 1; justify-content: center; }
+.step-dot {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--bg-card2);
+  border: 2px solid var(--silver);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: var(--silver);
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+.step-dot.completed {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+.step-dot.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+#progress-text {
+  font-size: 13px; font-weight: 700;
+  color: var(--accent); white-space: nowrap;
+}
+
+/* Sections */
+.step-section {
+  scroll-margin-top: 70px;
+  min-height: 100vh;
+  padding: 80px 20px 40px;
+  position: relative;
+}
+.step-section::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+}
+
+/* Step Badge */
+.step-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+.step-badge {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--bg-card2);
+  border: 3px solid var(--silver);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: var(--silver);
+  transition: all 0.5s ease; flex-shrink: 0;
+}
+.step-badge.completed {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+.step-title { font-size: 1.5rem; color: var(--accent); margin: 0; }
+.step-subtitle { font-size: 1rem; color: var(--text-muted); margin: 0; }
+
+/* Connector */
+.step-connector {
+  width: 3px; height: 40px; margin: 0 auto;
+  background: linear-gradient(to bottom, var(--primary), var(--accent));
+  border-radius: 2px;
+}
+
+/* Buttons */
+.btn-complete {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 52px; padding: 12px 32px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white; font-family: 'Fredoka One', cursive;
+  font-size: 1.15rem; border: none; border-radius: 16px;
+  cursor: pointer; transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(124,77,255,0.4);
+  margin-top: 20px;
+}
+.btn-complete:active { transform: scale(0.95); }
+.btn-complete:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-complete:hover { box-shadow: 0 6px 24px rgba(124,77,255,0.6); }
+
+/* Cards */
+.info-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 20px;
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
+}
+.info-card:hover { border-color: var(--accent); }
+
+/* Mystery pulse */
+@keyframes pulse-border {
+  0%, 100% { box-shadow: 0 0 20px rgba(124,77,255,0.3); }
+  50% { box-shadow: 0 0 40px rgba(124,77,255,0.7), 0 0 60px rgba(0,229,160,0.3); }
+}
+.pulse-mystery { animation: pulse-border 2s ease-in-out infinite; }
+
+/* Float animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.float-anim { animation: float 3s ease-in-out infinite; }
+
+/* Wiggle */
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+}
+
+/* Glow pulse */
+@keyframes glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(255,234,0,0.4)); }
+  50% { filter: drop-shadow(0 0 24px rgba(255,234,0,0.8)); }
+}
+
+/* Confetti */
+.confetti-particle {
+  position: fixed; top: -10px; z-index: 999;
+  width: 10px; height: 10px; border-radius: 2px;
+  animation: confetti-fall linear forwards;
+  pointer-events: none;
+}
+@keyframes confetti-fall {
+  0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
+}
+
+/* Checklist */
+.check-item {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--bg-card2);
+  padding: 14px 18px; border-radius: 14px;
+  cursor: pointer; transition: all 0.3s;
+  min-height: 56px; font-size: 1.05rem; font-weight: 600;
+  user-select: none;
+}
+.check-item.checked {
+  background: rgba(105,240,174,0.2);
+  border-color: var(--success);
+}
+.check-item .check-box {
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 3px solid var(--silver);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.3s;
+  font-size: 18px;
+}
+.check-item.checked .check-box {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+
+/* Sifter Game - The Emotion Revealer */
+.sifter-surface {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4A4A6A 0%, #2A2A3A 100%);
+  border: 4px solid var(--scary-red);
+  overflow: hidden;
+  cursor: pointer;
+  touch-action: none;
+  margin: 0 auto;
+}
+.sifter-surface::before {
+  content: '👹';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+  opacity: 1;
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+.sifter-surface.revealed::before {
+  opacity: 0;
+}
+.sifter-surface[data-monster="0"]::before { content: '👹'; border-color: var(--scary-red); }
+.sifter-surface[data-monster="1"]::before { content: '👻'; border-color: var(--secondary); }
+.sifter-surface[data-monster="2"]::before { content: '🤖'; border-color: var(--primary); }
+.sifter-surface[data-monster="0"] { border-color: var(--scary-red); }
+.sifter-surface[data-monster="1"] { border-color: var(--secondary); }
+.sifter-surface[data-monster="2"] { border-color: var(--primary); }
+.sifter-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+.sifter-surface.revealed .sifter-inner {
+  opacity: 1;
+}
+.sifter-progress {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+.sifter-progress-bar {
+  width: 0%;
+  height: 100%;
+  background: rgba(105,240,174,0.3);
+  border-radius: 50%;
+  transition: width 0.1s;
+}
+
+/* Monster Selection Buttons */
+.monster-btn {
+  background: var(--bg-card2);
+  border: 2px solid var(--silver);
+  border-radius: 12px;
+  padding: 8px 12px;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 70px;
+  text-align: center;
+}
+.monster-btn:hover {
+  border-color: var(--accent);
+  transform: scale(1.05);
+}
+.monster-btn.active {
+  background: rgba(124,77,255,0.3);
+  border-color: var(--primary);
+  box-shadow: 0 0 12px rgba(124,77,255,0.5);
+}
+
+/* Sorter Game */
+.sorter-zone {
+  min-height: 120px; border-radius: 16px;
+  padding: 12px; display: flex; flex-wrap: wrap;
+  gap: 8px; justify-content: center; align-items: flex-start;
+  transition: all 0.3s;
+}
+.sorter-item {
+  padding: 10px 16px; border-radius: 12px;
+  font-weight: 700; font-size: 0.95rem;
+  cursor: grab; transition: all 0.2s;
+  user-select: none; min-height: 48px;
+  display: flex; align-items: center; gap: 6px;
+}
+.sorter-item:active { transform: scale(1.05); }
+.sorter-item.selected {
+  border: 3px solid var(--accent) !important;
+  box-shadow: 0 0 16px rgba(255,234,0,0.5);
+}
+
+/* Activity Cards */
+.activity-card {
+  background: var(--bg-card);
+  border-radius: 16px; padding: 18px;
+  cursor: pointer; transition: all 0.3s;
+  border: 2px solid var(--bg-card2);
+  min-height: 80px; display: flex;
+  align-items: center; gap: 14px;
+  user-select: none;
+}
+.activity-card.done {
+  border-color: var(--success);
+  background: rgba(105,240,174,0.1);
+}
+.activity-card .act-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: var(--bg-card2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; flex-shrink: 0;
+}
+
+/* Watermark */
+.watermark-logo {
+  position: fixed; z-index: -1;
+  opacity: 0.04; pointer-events: none;
+  animation: float 8s ease-in-out infinite;
+}
+
+/* Discussion Bubble */
+.discuss-bubble {
+  background: linear-gradient(135deg, rgba(0,229,160,0.15), rgba(124,77,255,0.1));
+  border: 2px dashed var(--secondary);
+  border-radius: 16px; padding: 16px;
+  margin: 16px 0;
+}
+
+/* Monster SVG styles */
+.monster-svg { filter: drop-shadow(0 0 12px rgba(124,77,255,0.5)); }
+
+/* Kaiju emotion reveal animation */
+@keyframes reveal-emotion {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+.emotion-reveal {
+  animation: reveal-emotion 0.6s ease-out forwards;
+}
+
+/* Monster wobble when scared */
+@keyframes monster-wobble {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  20% { transform: rotate(-5deg) scale(1.05); }
+  40% { transform: rotate(5deg) scale(1); }
+  60% { transform: rotate(-5deg) scale(1.05); }
+  80% { transform: rotate(5deg) scale(1); }
+}
+.monster-wobble { animation: monster-wobble 0.8s ease-in-out; }
+
+/* Emotion heart floating */
+@keyframes heart-float {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-40px) scale(0.5); opacity: 0; }
+}
+.heart-float { animation: heart-float 1s ease-out forwards; }
+
+/* Blush pulse animation */
+@keyframes blush-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .step-title { font-size: 1.25rem; }
+  .step-section { padding: 70px 14px 30px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div id="progress-bar">
+  <img src="magikidlogo.png" alt="Magikid" style="height:30px;">
+  <div id="progress-steps"></div>
+  <span id="progress-text">0/6 Steps</span>
+</div>
+
+<!-- Watermark Logos -->
+<img src="magikidlogo.png" class="watermark-logo" style="top:20%;left:5%;width:120px;animation-delay:0s;">
+<img src="magikidlogo.png" class="watermark-logo" style="top:50%;right:5%;width:100px;animation-delay:2s;">
+<img src="magikidlogo.png" class="watermark-logo" style="top:75%;left:10%;width:80px;animation-delay:4s;">
+<img src="magikidlogo.png" class="watermark-logo" style="top:35%;right:12%;width:90px;animation-delay:6s;">
+
+<!-- ==================== STEP 1: THE MYSTERY ==================== -->
+<section id="step1" class="step-section" style="background: linear-gradient(180deg, #1A1033 0%, #2D1B4E 100%);">
+  <div class="max-w-2xl mx-auto">
+    <div class="step-header">
+      <div class="step-badge" id="badge1">1</div>
+      <div>
+        <h2 class="step-title">🚨 The Mystery</h2>
+        <p class="step-subtitle">Something scary is happening...</p>
+      </div>
+    </div>
+
+    <!-- Hero with Logo -->
+    <div class="text-center mb-6">
+      <img src="magikidlogo.png" alt="Magikid" class="mx-auto mb-4" style="height:60px;">
+      <h1 class="text-3xl md:text-4xl font-bold mb-2" style="font-family:'Fredoka One';color:var(--accent);text-shadow:0 0 20px rgba(255,234,0,0.4);">
+        Cyber Suit Warriors
+      </h1>
+      <p class="text-xl" style="color:var(--primary);font-family:'Fredoka One';">Monster Emotions</p>
+    </div>
+
+    <!-- Pulsing Mystery Card -->
+    <div class="info-card pulse-mystery text-center mb-6" style="border:2px solid var(--scary-red);">
+      <div class="text-5xl mb-4">👹</div>
+      <h3 class="text-xl font-bold mb-3" style="color:var(--scary-red);">A Giant Kaiju Appeared!</h3>
+      <p class="text-base leading-relaxed" style="color:var(--text-light);">
+        ROAR! The ground is shaking! A GIANT monster appeared in the city! 🌆<br>
+        Everyone is running and screaming...<br>
+        <strong style="color:var(--warning);">But wait — is this Kaiju really BAD?</strong><br>
+        Let's find out what's REALLY going on!
+      </p>
+    </div>
+
+    <!-- Interactive: Roar like a Kaiju! -->
+    <div class="info-card text-center mb-4">
+      <p class="text-lg font-bold mb-3" style="color:var(--secondary);">🌟 Quick! Roar like a Kaiju! 🌟</p>
+      <p style="color:var(--text-muted);">Stand up tall, make your arms into BIG claws, and ROOOOAR! Take 3 big steps to "arrive" like a giant monster!</p>
+      <div class="text-6xl my-4 float-anim">🦎</div>
+      <p class="text-sm" style="color:var(--text-muted);">Stomp, stomp, stomp! 👣👣👣 You feel that vibration?</p>
+    </div>
+
+    <!-- Discussion -->
+    <div class="discuss-bubble">
+      <p class="font-bold" style="color:var(--secondary);">💬 Talk to a friend:</p>
+      <p>"Why do you think the Kaiju came to the city? What might it be feeling?"</p>
+    </div>
+
+    <div class="text-center">
+      <button class="btn-complete" onclick="completeStep(1)">I Did It! 🎉</button>
+    </div>
+  </div>
+</section>
+
+<div class="step-connector"></div>
+
+<!-- ==================== STEP 2: MEET THE SUBJECT ==================== -->
+<section id="step2" class="step-section" style="background: linear-gradient(180deg, #2D1B4E 0%, #1A1033 100%);">
+  <div class="max-w-2xl mx-auto">
+    <div class="step-header">
+      <div class="step-badge" id="badge2">2</div>
+      <div>
+        <h2 class="step-title">👁️ Meet Kaijun</h2>
+        <p class="step-subtitle">Not all monsters are scary!</p>
+      </div>
+    </div>
+
+    <!-- Interactive Kaiju Character -->
+    <div class="info-card text-center mb-4 cursor-pointer" onclick="animateCharacter()" id="kaiju-character-card">
+      <p class="text-sm font-bold mb-2" style="color:var(--accent);">👆 Tap Kaijun to see all emotions! (8 total)</p>
+      <svg id="kaiju-character" viewBox="0 0 200 240" width="160" height="190" class="mx-auto monster-svg" style="transition: transform 0.3s;">
+        <!-- Body -->
+        <ellipse id="kaiju-body" cx="100" cy="170" rx="55" ry="60" fill="#7C4DFF"/>
+        <!-- Belly -->
+        <ellipse id="kaiju-belly" cx="100" cy="180" rx="35" ry="40" fill="#9575CD"/>
+        <!-- Head -->
+        <ellipse cx="100" cy="80" rx="45" ry="40" fill="#7C4DFF"/>
+        <!-- Horns -->
+        <path d="M60 55 L50 20 L70 50 Z" fill="#651FFF"/>
+        <path d="M140 55 L150 20 L130 50 Z" fill="#651FFF"/>
+        <!-- Eyes (big and cute) -->
+        <ellipse cx="80" cy="75" rx="15" ry="18" fill="white"/>
+        <ellipse cx="120" cy="75" rx="15" ry="18" fill="white"/>
+        <circle id="pupil-left" cx="82" cy="78" r="8" fill="#333"/>
+        <circle id="pupil-right" cx="122" cy="78" r="8" fill="#333"/>
+        <circle id="shine-left" cx="85" cy="75" r="3" fill="white"/>
+        <circle id="shine-right" cx="125" cy="75" r="3" fill="white"/>
+        <!-- Eyebrows (change with emotion) -->
+        <path id="left-brow" d="M60 58 Q80 55 95 60" stroke="#651FFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path id="right-brow" d="M105 60 Q120 55 140 58" stroke="#651FFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <!-- Mouth (changes with emotion) -->
+        <path id="mouth" d="M80 100 Q100 115 120 100" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- Blush (shows on shy/love) -->
+        <ellipse id="blush-left" cx="65" cy="90" rx="8" ry="5" fill="#FFB6C1" opacity="0"/>
+        <ellipse id="blush-right" cx="135" cy="90" rx="8" ry="5" fill="#FFB6C1" opacity="0"/>
+        <!-- Spots on body -->
+        <circle cx="70" cy="150" r="6" fill="#9575CD"/>
+        <circle cx="130" cy="155" r="5" fill="#9575CD"/>
+        <circle cx="90" cy="200" r="4" fill="#9575CD"/>
+        <!-- Arms -->
+        <ellipse cx="45" cy="160" rx="15" ry="25" fill="#7C4DFF"/>
+        <ellipse cx="155" cy="160" rx="15" ry="25" fill="#7C4DFF"/>
+        <!-- Feet -->
+        <ellipse cx="75" cy="228" rx="18" ry="10" fill="#651FFF"/>
+        <ellipse cx="125" cy="228" rx="18" ry="10" fill="#651FFF"/>
+        <!-- Tail -->
+        <path d="M155 190 Q180 200 175 230 Q170 240 165 235" stroke="#7C4DFF" stroke-width="12" fill="none" stroke-linecap="round"/>
+      </svg>
+      <p class="text-sm mt-2" style="color:var(--text-muted);">This is Kaijun! He looks scary but is actually very gentle! <span id="emotion-label" style="color:var(--accent);">😊 Happy</span></p>
+      <p class="text-xs mt-1" style="color:var(--text-muted);">Happy → Angry → Scared → Shy → Big Smile → Surprised → Love → Sad</p>
+    </div>
+
+    <!-- Fun Facts Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div class="info-card text-center" style="border-color:var(--scary-red);">
+        <div class="text-3xl mb-2">😰</div>
+        <p class="font-bold text-sm" style="color:var(--accent);">FEAR</p>
+        <p class="text-xs" style="color:var(--text-muted);">Kaiju get scared of loud noises and bright lights!</p>
+      </div>
+      <div class="info-card text-center" style="border-color:var(--warning);">
+        <div class="text-3xl mb-2">😢</div>
+        <p class="font-bold text-sm" style="color:var(--accent);">LONELY</p>
+        <p class="text-xs" style="color:var(--text-muted);">Sometimes they just want a friend to play with!</p>
+      </div>
+      <div class="info-card text-center" style="border-color:var(--friendly-green);">
+        <div class="text-3xl mb-2">😊</div>
+        <p class="font-bold text-sm" style="color:var(--accent);">HAPPY</p>
+        <p class="text-xs" style="color:var(--text-muted);">When you smile at them, they feel warm inside!</p>
+      </div>
+    </div>
+
+    <!-- Discussion -->
+    <div class="discuss-bubble">
+      <p class="font-bold" style="color:var(--secondary);">💬 Talk to a friend:</p>
+      <p>"Has there ever been a time when YOU looked angry on the outside but were actually feeling something else inside?"</p>
+    </div>
+
+    <div class="text-center">
+      <button class="btn-complete" onclick="completeStep(2)">I Met Kaijun! 👀</button>
+    </div>
+  </div>
+</section>
+
+<div class="step-connector"></div>
+
+<!-- ==================== STEP 3: GEAR UP ==================== -->
+<section id="step3" class="step-section" style="background: linear-gradient(180deg, #1A1033 0%, #2D1B4E 100%);">
+  <div class="max-w-2xl mx-auto">
+    <div class="step-header">
+      <div class="step-badge" id="badge3">3</div>
+      <div>
+        <h2 class="step-title">🎒 Gear Up</h2>
+        <p class="step-subtitle">Get ready to understand monster feelings!</p>
+      </div>
+    </div>
+
+    <p class="text-center mb-6" style="color:var(--text-muted);">Tap each item when you're ready!</p>
+
+    <div class="space-y-4" id="gear-checklist">
+      <div class="check-item" onclick="toggleCheck(this, 3)">
+        <div class="check-box">✓</div>
+        <span>👟 Kind heart — ready to be nice!</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this, 3)">
+        <div class="check-box">✓</div>
+        <span>🧠 Thinking brain — ask questions!</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this, 3)">
+        <div class="check-box">✓</div>
+        <span>👀 Looking eyes — find feelings everywhere!</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this, 3)">
+        <div class="check-box">✓</div>
+        <span>🤲 Helping hands — be ready to help!</span>
+      </div>
+    </div>
+
+    <div class="text-center mt-6">
+      <div id="gear-status" class="text-lg font-bold" style="color:var(--accent);">0/4 Ready!</div>
+    </div>
+
+    <div class="text-center">
+      <button class="btn-complete" onclick="completeStep(3)" id="gear-btn" disabled>I'm Ready! 🎒</button>
+    </div>
+  </div>
+</section>
+
+<div class="step-connector"></div>
+
+<!-- ==================== STEP 4: CHALLENGES ==================== -->
+<section id="step4" class="step-section" style="background: linear-gradient(180deg, #2D1B4E 0%, #1A1033 100%);">
+  <div class="max-w-2xl mx-auto">
+    <div class="step-header">
+      <div class="step-badge" id="badge4">4</div>
+      <div>
+        <h2 class="step-title">⚡ The Challenges</h2>
+        <p class="step-subtitle">2 missions to discover the truth!</p>
+      </div>
+    </div>
+
+    <!-- Challenge 1: The Sifter - Emotion Revealer -->
+    <div class="info-card mb-6" style="border-color:var(--primary);">
+      <h3 class="text-lg font-bold mb-3" style="color:var(--primary);">🔍 Mission 1: The Emotion Revealer</h3>
+      <p class="text-sm mb-4" style="color:var(--text-muted);">The Kaiju looks SCARY on the outside! But what's hiding underneath? Rub to reveal the true feelings!</p>
+      
+      <!-- Monster Selector -->
+      <div class="flex justify-center gap-2 mb-4">
+        <button class="monster-btn active" data-monster="0" onclick="switchMonster(0)">
+          <span class="text-xl">👹</span><br><span class="text-xs">Kaijun</span>
+        </button>
+        <button class="monster-btn" data-monster="1" onclick="switchMonster(1)">
+          <span class="text-xl">👻</span><br><span class="text-xs">Grumble</span>
+        </button>
+        <button class="monster-btn" data-monster="2" onclick="switchMonster(2)">
+          <span class="text-xl">🤖</span><br><span class="text-xs">Blitz</span>
+        </button>
+      </div>
+      
+      <!-- Monster Display -->
+      <div class="text-center mb-4">
+        <div class="sifter-surface" id="emotion-sifter" data-monster="0" ontouchstart="startScrub(event)" ontouchmove="doScrub(event)" ontouchend="endScrub()">
+          <div class="sifter-inner" id="sifter-emotion">💚</div>
+          <div class="sifter-progress">
+            <div class="sifter-progress-bar" id="scrub-progress"></div>
+          </div>
+        </div>
+        <p class="text-xs mt-2" style="color:var(--text-muted);">Tap and rub the surface!</p>
+        <p class="text-sm mt-1" id="monster-hint" style="color:var(--accent);">"I look scary but I'm actually..."</p>
+      </div>
+      
+      <div id="sifter-result" class="text-center" style="display:none;">
+        <p class="text-lg font-bold" style="color:var(--friendly-green);">You found the true feeling!</p>
+        <p class="text-sm" style="color:var(--text-light);">Behind the <span id="monster-outer">scary</span> face is a heart full of...</p>
+        <div class="text-4xl my-2 emotion-reveal" id="emotion-reveal">💖</div>
+        <p class="font-bold" style="color:var(--scary-red);" id="reveal-text">This Kaiju was just LONELY!</p>
+      </div>
+      
+      <!-- Play Again Button -->
+      <div class="text-center mt-4" id="play-again-container" style="display:none;">
+        <button class="btn-complete" style="background:linear-gradient(135deg, var(--secondary), var(--secondary-dark));padding:10px 24px;font-size:1rem;" onclick="resetSifter()">
+          🔄 Play Again!
+        </button>
+      </div>
+    </div>
+
+    <!-- Challenge 2: The Sorter - Monster Actions -->
+    <div class="info-card mb-6" style="border-color:var(--secondary);">
+      <h3 class="text-lg font-bold mb-3" style="color:var(--secondary);">🎯 Mission 2: Monster Action Sorter</h3>
+      <p class="text-sm mb-4" style="color:var(--text-muted);">Sort these Kaiju actions! Are they Frightening (scary) or Friendly (nice)?</p>
+      
+      <!-- Items to sort -->
+      <div class="mb-4">
+        <p class="text-xs font-bold mb-2" style="color:var(--accent);">TAP an action, then TAP the zone to sort it:</p>
+        <div class="flex flex-wrap gap-2 justify-center" id="sort-items">
+          <div class="sorter-item" style="background:var(--scary-red);color:white;" data-type="frightening" onclick="selectSortItem(this)">😱 Scary roar</div>
+          <div class="sorter-item" style="background:var(--friendly-green);color:white;" data-type="friendly" onclick="selectSortItem(this)">🌸 Gives flowers</div>
+          <div class="sorter-item" style="background:var(--scary-red);color:white;" data-type="frightening" onclick="selectSortItem(this)">💥 Breaks buildings</div>
+          <div class="sorter-item" style="background:var(--friendly-green);color:white;" data-type="friendly" onclick="selectSortItem(this)">🤗 Hugs gently</div>
+          <div class="sorter-item" style="background:var(--warning);color:white;" data-type="scared" onclick="selectSortItem(this)">😨 Shaking in fear</div>
+          <div class="sorter-item" style="background:var(--friendly-green);color:white;" data-type="friendly" onclick="selectSortItem(this)">🏠 Builds shelter</div>
+        </div>
+      </div>
+      
+      <!-- Drop zones -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="sorter-zone" style="background:rgba(255,82,82,0.2);border:3px dashed var(--scary-red);" onclick="dropSortItem('frightening')">
+          <p class="text-center text-sm font-bold mb-2" style="color:var(--scary-red);">😱 Frightening</p>
+          <div id="frightening-zone"></div>
+        </div>
+        <div class="sorter-zone" style="background:rgba(105,240,174,0.2);border:3px dashed var(--friendly-green);" onclick="dropSortItem('friendly')">
+          <p class="text-center text-sm font-bold mb-2" style="color:var(--friendly-green);">💚 Friendly</p>
+          <div id="friendly-zone"></div>
+        </div>
+      </div>
+      
+      <div id="sort-progress" class="text-center mt-4">
+        <p class="text-sm" style="color:var(--text-muted);">Sort all 6 actions! <span id="sort-count">0</span>/6 done</p>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <button class="btn-complete" onclick="completeStep(4)" id="challenge-btn" disabled>Challenges Done! ⚡</button>
+    </div>
+  </div>
+</section>
+
+<div class="step-connector"></div>
+
+<!-- ==================== STEP 5: ACTIVITY GAMES ==================== -->
+<section id="step5" class="step-section" style="background: linear-gradient(180deg, #1A1033 0%, #2D1B4E 100%);">
+  <div class="max-w-2xl mx-auto">
+    <div class="step-header">
+      <div class="step-badge" id="badge5">5</div>
+      <div>
+        <h2 class="step-title">🏃 Activity Games</h2>
+        <p class="step-subtitle">Get moving like a Kaiju!</p>
+      </div>
+    </div>
+
+    <p class="text-center mb-4" style="color:var(--text-muted);">Tap each activity when you finish!</p>
+    <p class="text-center mb-6 text-sm" style="color:var(--accent);"><span id="activity-count">0</span>/3 Activities Done</p>
+
+    <div class="space-y-4" id="activity-list">
+      <div class="activity-card" onclick="completeActivity(this)">
+        <div class="act-icon">🦶</div>
+        <div>
+          <p class="font-bold" style="color:var(--primary);">Kaiju Stomp!</p>
+          <p class="text-sm" style="color:var(--text-muted);">Stomp 5 times like a big Kaiju! Feel the ground shake!</p>
+        </div>
+        <div class="ml-auto text-2xl">✓</div>
+      </div>
+      
+      <div class="activity-card" onclick="completeActivity(this)">
+        <div class="act-icon">🧘</div>
+        <div>
+          <p class="font-bold" style="color:var(--secondary);">Big Breath Calm</p>
+          <p class="text-sm" style="color:var(--text-muted);">Take 3 deep breaths. Breathe in... and out... Like a peaceful Kaiju!</p>
+        </div>
+        <div class="ml-auto text-2xl">✓</div>
+      </div>
+      
+      <div class="activity-card" onclick="completeActivity(this)">
+        <div class="act-icon">🔍</div>
+        <div>
+          <p class="font-bold" style="color:var(--warning);">Emotion Hunt</p>
+          <p class="text-sm" style="color:var(--text-muted);">Find 3 things around you. Are they HAPPY, SAD, or SCARED? Tell a friend!</p>
+        </div>
+        <div class="ml-auto text-2xl">✓</div>
+      </div>
+    </div>
+
+    <div class="text-center mt-6">
+      <button class="btn-complete" onclick="completeStep(5)" id="activity-btn" disabled>Activities Done! 🏃</button>
+    </div>
+  </div>
+</section>
+
+<div class="step-connector"></div>
+
+<!-- ==================== STEP 6: THE BIG IDEA ==================== -->
+<section id="step6" class="step-section" style="background: linear-gradient(180deg, #2D1B4E 0%, #1A1033 100%);">
+  <div class="max-w-2xl mx-auto">
+    <div class="step-header">
+      <div class="step-badge" id="badge6">6</div>
+      <div>
+        <h2 class="step-title">🧠 The Big Idea</h2>
+        <p class="step-subtitle">What we learned about Kaiju feelings!</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div class="info-card text-center" style="border-color:var(--primary);background:linear-gradient(135deg, var(--bg-card), rgba(124,77,255,0.1));">
+        <div class="text-4xl mb-3">👹≠😈</div>
+        <h3 class="font-bold mb-2" style="color:var(--primary);">Scary ≠ Bad</h3>
+        <p class="text-sm" style="color:var(--text-light);">Something that looks scary might just be scared or lonely. We can't judge by looks alone!</p>
+      </div>
+      
+      <div class="info-card text-center" style="border-color:var(--secondary);background:linear-gradient(135deg, var(--bg-card), rgba(0,229,160,0.1));">
+        <div class="text-4xl mb-3">💚</div>
+        <h3 class="font-bold mb-2" style="color:var(--secondary);">Everyone Has Feelings</h3>
+        <p class="text-sm" style="color:var(--text-light);">Kaiju, robots, even trees — everything has feelings. Even things that look different from us!</p>
+      </div>
+      
+      <div class="info-card text-center md:col-span-2" style="border-color:var(--accent);background:linear-gradient(135deg, var(--bg-card), rgba(255,234,0,0.1));">
+        <div class="text-4xl mb-3">🤝</div>
+        <h3 class="font-bold mb-2" style="color:var(--accent);">Be Kind to Everyone</h3>
+        <p class="text-sm" style="color:var(--text-light);">The best way to handle a "scary" situation? Be kind! A smile can change everything!</p>
+      </div>
+    </div>
+
+    <!-- Connection to Mystery -->
+    <div class="info-card text-center mb-6" style="border-color:var(--warning);">
+      <h3 class="font-bold mb-2" style="color:var(--warning);">🔗 How This Solves the Mystery!</h3>
+      <p class="text-sm" style="color:var(--text-light);">
+        The Kaiju wasn't attacking — it was <strong>scared and lonely</strong>! When people ran away screaming, it got even MORE scared and accidentally broke things. But when we <strong>understand feelings</strong>, we can help everyone feel better! 🌟
+      </p>
+    </div>
+
+    <div class="text-center">
+      <button class="btn-complete" onclick="completeStep(6)">I Understand! 🧠</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== REWARD SECTION ==================== -->
+<section id="reward" class="step-section text-center" style="background:linear-gradient(180deg, #1A1033 0%, #2D1B4E 50%, #1A1033 100%);display:none;">
+  <div class="max-w-lg mx-auto">
+    <div id="confetti-container"></div>
+    
+    <img src="magikidlogo.png" alt="Magikid" class="mx-auto mb-4" style="height:70px;">
+    
+    <h2 class="text-3xl font-bold mb-2" style="font-family:'Fredoka One';color:var(--accent);">🎉 Level Up! 🎉</h2>
+    <p class="text-lg mb-6" style="color:var(--secondary);">You completed the Monster Emotions mission!</p>
+    
+    <!-- Badge -->
+    <div class="info-card inline-block mb-6" style="border-color:var(--gold);background:linear-gradient(135deg, var(--bg-card), rgba(255,213,79,0.2));">
+      <div class="text-6xl mb-3 float-anim">🏆</div>
+      <h3 class="text-xl font-bold" style="color:var(--gold);">Monster Emotions Explorer</h3>
+      <p class="text-sm" style="color:var(--text-muted);">Official Magikid Cyber Suit Warriors Rookie!</p>
+    </div>
+    
+    <!-- What You Learned -->
+    <div class="info-card text-left mb-6" style="border-color:var(--secondary);">
+      <h3 class="font-bold mb-3 text-center" style="color:var(--secondary);">📚 What You Learned</h3>
+      <ul class="text-sm space-y-2" style="color:var(--text-light);">
+        <li>✅ Monsters can have feelings too!</li>
+        <li>✅ Scary-looking doesn't mean bad!</li>
+        <li>✅ Kindness can fix misunderstandings!</li>
+        <li>✅ Everyone deserves friendship!</li>
+      </ul>
+    </div>
+    
+    <!-- Sound Effect Button -->
+    <button class="btn-complete mb-4" style="background:linear-gradient(135deg, var(--secondary), var(--secondary-dark));" onclick="playSound('roar')">
+      🔊 Hear Kaijun's Happy Roar!
+    </button>
+    
+    <div class="mt-6">
+      <img src="magikidlogo.png" alt="Magikid" class="mx-auto" style="height:40px;opacity:0.7;">
+      <p class="text-xs mt-2" style="color:var(--text-muted);">Magikid AI Robotics Lab / Empowering Young Minds Through Robotics</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+// ============ GLOBAL STATE ============
+const steps = [false, false, false, false, false, false];
+let activitiesDone = 0;
+let sortDone = 0;
+let selectedSortItem = null;
+let audioContext = null;
+
+// ============ INITIALIZATION ============
+function init() {
+  // Create progress dots
+  const container = document.getElementById('progress-steps');
+  for (let i = 1; i <= 6; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'step-dot';
+    dot.id = 'dot' + i;
+    dot.textContent = i;
+    dot.onclick = () => scrollToStep(i);
+    container.appendChild(dot);
+  }
+  
+  // Initialize monster sifter
+  switchMonster(0);
+  
+  // Scroll tracking
+  window.addEventListener('scroll', updateActiveStep);
+  updateProgress();
+}
+
+// ============ STEP COMPLETION ============
+function completeStep(n) {
+  if (steps[n-1]) return;
+  steps[n-1] = true;
+  
+  const badge = document.getElementById('badge' + n);
+  badge.classList.add('completed');
+  badge.innerHTML = '✓';
+  
+  const dot = document.getElementById('dot' + n);
+  dot.classList.add('completed');
+  dot.textContent = '✓';
+  
+  updateProgress();
+  playSound('step');
+  
+  // Show reward section after all steps
+  if (steps.every(s => s)) {
+    setTimeout(() => {
+      document.getElementById('reward').style.display = 'block';
+      document.getElementById('reward').scrollIntoView({ behavior: 'smooth' });
+      showConfetti();
+    }, 500);
+  }
+}
+
+function updateProgress() {
+  const completed = steps.filter(s => s).length;
+  document.getElementById('progress-text').textContent = completed + '/6 Steps';
+}
+
+function scrollToStep(n) {
+  document.getElementById('step' + n).scrollIntoView({ behavior: 'smooth' });
+}
+
+function updateActiveStep() {
+  for (let i = 1; i <= 6; i++) {
+    const section = document.getElementById('step' + i);
+    const dot = document.getElementById('dot' + i);
+    const rect = section.getBoundingClientRect();
+    
+    if (rect.top <= 120 && rect.bottom >= 120) {
+      dot.classList.add('active');
+    } else {
+      dot.classList.remove('active');
+    }
+  }
+}
+
+// ============ CHARACTER ANIMATION ============
+let currentEmotion = 0;
+const emotions = [
+  { name: '😊 Happy', mouth: 'M80 100 Q100 115 120 100', brows: 'normal', eyes: 'normal', emoji: '😊', bodyColor: '#7C4DFF' },
+  { name: '😠 Angry', mouth: 'M80 102 Q100 95 120 102', brows: 'angry', eyes: 'angry', emoji: '😠', bodyColor: '#E53935' },
+  { name: '😨 Scared', mouth: 'M85 105 Q100 100 115 105', brows: 'worried', eyes: 'worried', emoji: '😨', bodyColor: '#7C4DFF' },
+  { name: '😳 Shy', mouth: 'M88 102 Q100 105 112 102', brows: 'normal', eyes: 'shy', emoji: '😳', bodyColor: '#9C27B0' },
+  { name: '😄 Big Smile', mouth: 'M75 98 Q100 125 125 98', brows: 'happy', eyes: 'happy', emoji: '😄', bodyColor: '#7C4DFF' },
+  { name: '😮 Surprised', mouth: 'M88 100 Q100 115 112 100 Q100 108 88 100', brows: 'surprised', eyes: 'surprised', emoji: '😮', bodyColor: '#FF9800' },
+  { name: '🥰 Love', mouth: 'M80 100 Q100 118 120 100', brows: 'love', eyes: 'love', emoji: '🥰', bodyColor: '#E91E63' },
+  { name: '😢 Sad', mouth: 'M80 105 Q100 95 120 105', brows: 'sad', eyes: 'sad', emoji: '😢', bodyColor: '#5C6BC0' },
+];
+
+// Create eyes elements dynamically
+const eyeLeft = { pupil: null, shine: null };
+const eyeRight = { pupil: null, shine: null };
+
+function animateCharacter() {
+  const svg = document.getElementById('kaiju-character');
+  const mouth = document.getElementById('mouth');
+  const leftBrow = document.getElementById('left-brow');
+  const rightBrow = document.getElementById('right-brow');
+  const body = document.getElementById('kaiju-body');
+  const belly = document.getElementById('kaiju-belly');
+  
+  currentEmotion = (currentEmotion + 1) % emotions.length;
+  const emotion = emotions[currentEmotion];
+  
+  // Show emotion name
+  const label = document.getElementById('emotion-label');
+  if (label) label.textContent = emotion.name;
+  
+  // Wobble animation
+  svg.classList.add('monster-wobble');
+  setTimeout(() => svg.classList.remove('monster-wobble'), 800);
+  
+  // Update body color
+  if (body) body.setAttribute('fill', emotion.bodyColor);
+  if (belly) belly.setAttribute('fill', adjustColor(emotion.bodyColor, 20));
+  
+  // Update mouth
+  mouth.setAttribute('d', emotion.mouth);
+  
+  // Update eyebrows and eyes based on emotion
+  const pupilL = document.getElementById('pupil-left');
+  const pupilR = document.getElementById('pupil-right');
+  const shineL = document.getElementById('shine-left');
+  const shineR = document.getElementById('shine-right');
+  
+  switch(emotion.brows) {
+    case 'angry':
+      leftBrow.setAttribute('d', 'M60 55 Q80 62 95 55');
+      rightBrow.setAttribute('d', 'M105 55 Q120 62 140 55');
+      if (pupilL) { pupilL.setAttribute('r', '6'); pupilL.setAttribute('cy', '80'); }
+      if (pupilR) { pupilR.setAttribute('r', '6'); pupilR.setAttribute('cy', '80'); }
+      break;
+    case 'worried':
+      leftBrow.setAttribute('d', 'M60 58 Q80 62 95 60');
+      rightBrow.setAttribute('d', 'M105 60 Q120 62 140 58');
+      if (pupilL) { pupilL.setAttribute('r', '6'); pupilL.setAttribute('cy', '78'); }
+      if (pupilR) { pupilR.setAttribute('r', '6'); pupilR.setAttribute('cy', '78'); }
+      break;
+    case 'sad':
+      leftBrow.setAttribute('d', 'M60 62 Q80 58 95 60');
+      rightBrow.setAttribute('d', 'M105 60 Q120 58 140 62');
+      if (pupilL) { pupilL.setAttribute('r', '6'); pupilL.setAttribute('cy', '82'); }
+      if (pupilR) { pupilR.setAttribute('r', '6'); pupilR.setAttribute('cy', '82'); }
+      break;
+    case 'happy':
+      leftBrow.setAttribute('d', 'M60 58 Q80 52 95 58');
+      rightBrow.setAttribute('d', 'M105 58 Q120 52 140 58');
+      if (pupilL) { pupilL.setAttribute('r', '8'); pupilL.setAttribute('cy', '78'); }
+      if (pupilR) { pupilR.setAttribute('r', '8'); pupilR.setAttribute('cy', '78'); }
+      break;
+    case 'surprised':
+      leftBrow.setAttribute('d', 'M60 55 Q80 50 95 55');
+      rightBrow.setAttribute('d', 'M105 55 Q120 50 140 55');
+      if (pupilL) { pupilL.setAttribute('r', '10'); pupilL.setAttribute('cy', '75'); }
+      if (pupilR) { pupilR.setAttribute('r', '10'); pupilR.setAttribute('cy', '75'); }
+      break;
+    case 'love':
+      leftBrow.setAttribute('d', 'M60 58 Q80 54 95 60');
+      rightBrow.setAttribute('d', 'M105 60 Q120 54 140 58');
+      if (pupilL) { pupilL.setAttribute('r', '9'); pupilL.setAttribute('cy', '76'); }
+      if (pupilR) { pupilR.setAttribute('r', '9'); pupilR.setAttribute('cy', '76'); }
+      break;
+    default:
+      leftBrow.setAttribute('d', 'M60 58 Q80 55 95 60');
+      rightBrow.setAttribute('d', 'M105 60 Q120 55 140 58');
+      if (pupilL) { pupilL.setAttribute('r', '8'); pupilL.setAttribute('cy', '78'); }
+      if (pupilR) { pupilR.setAttribute('r', '8'); pupilR.setAttribute('cy', '78'); }
+  }
+  
+  // Handle blush for shy and love emotions
+  const blushL = document.getElementById('blush-left');
+  const blushR = document.getElementById('blush-right');
+  if (blushL && blushR) {
+    if (emotion.brows === 'shy' || emotion.brows === 'love') {
+      blushL.setAttribute('opacity', '0.6');
+      blushR.setAttribute('opacity', '0.6');
+      blushL.style.animation = 'blush-pulse 1s ease-in-out infinite';
+      blushR.style.animation = 'blush-pulse 1s ease-in-out infinite';
+    } else {
+      blushL.setAttribute('opacity', '0');
+      blushR.setAttribute('opacity', '0');
+      blushL.style.animation = 'none';
+      blushR.style.animation = 'none';
+    }
+  }
+  
+  playSound('pop');
+}
+
+function adjustColor(hex, percent) {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = Math.min(255, Math.max(0, (num >> 16) + amt));
+  const G = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amt));
+  const B = Math.min(255, Math.max(0, (num & 0x0000FF) + amt));
+  return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+}
+
+// ============ GEAR CHECKLIST ============
+let gearChecked = 0;
+const gearTotal = 4;
+
+function toggleCheck(element, step) {
+  if (element.classList.contains('checked')) {
+    element.classList.remove('checked');
+    gearChecked--;
+  } else {
+    element.classList.add('checked');
+    gearChecked++;
+  }
+  
+  document.getElementById('gear-status').textContent = gearChecked + '/' + gearTotal + ' Ready!';
+  
+  const btn = document.getElementById('gear-btn');
+  if (gearChecked === gearTotal) {
+    btn.disabled = false;
+    playSound('ready');
+  } else {
+    btn.disabled = true;
+  }
+}
+
+// ============ SIFTER GAME (The Emotion Revealer) ============
+let scrubAmount = 0;
+const scrubThreshold = 100;
+let sifterRevealed = false;
+let currentMonster = 0;
+
+// Multiple monsters with different emotions
+const monsters = [
+  {
+    name: 'Kaijun',
+    outer: '👹',
+    emoji: 'scary',
+    innerEmoji: '💖',
+    innerText: 'Kaijun was just LONELY and wanted a friend!',
+    hint: '"I look scary but I\'m actually..."',
+    borderColor: 'var(--scary-red)'
+  },
+  {
+    name: 'Grumble',
+    outer: '👻',
+    emoji: 'ghostly',
+    innerEmoji: '💚',
+    innerText: 'Grumble was just SCARED and wanted protection!',
+    hint: '"I\'m transparent but I\'m actually..."',
+    borderColor: 'var(--secondary)'
+  },
+  {
+    name: 'Blitz',
+    outer: '🤖',
+    emoji: 'robotic',
+    innerEmoji: '💙',
+    innerText: 'Blitz was just CONFUSED and needed help!',
+    hint: '"I make beeping sounds but I\'m actually..."',
+    borderColor: 'var(--primary)'
+  }
+];
+
+function switchMonster(index) {
+  currentMonster = index;
+  
+  // Update button states
+  document.querySelectorAll('.monster-btn').forEach((btn, i) => {
+    if (i === index) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+  
+  // Reset the sifter
+  resetSifter();
+  
+  // Update border color and data attribute
+  const surface = document.getElementById('emotion-sifter');
+  surface.setAttribute('data-monster', index);
+  
+  // Update hint text
+  document.getElementById('monster-hint').textContent = monsters[index].hint;
+}
+
+function startScrub(e) {
+  if (sifterRevealed) return;
+  e.preventDefault();
+  scrubAmount = Math.min(scrubAmount + 15, scrubThreshold);
+  updateSifter();
+}
+
+function doScrub(e) {
+  if (sifterRevealed) return;
+  e.preventDefault();
+  scrubAmount = Math.min(scrubAmount + 3, scrubThreshold);
+  updateSifter();
+}
+
+function endScrub() {
+  if (sifterRevealed) return;
+  if (scrubAmount >= scrubThreshold) {
+    revealEmotion();
+  }
+}
+
+function updateSifter() {
+  const progress = document.getElementById('scrub-progress');
+  progress.style.width = (scrubAmount / scrubThreshold * 100) + '%';
+  
+  const surface = document.getElementById('emotion-sifter');
+  
+  if (scrubAmount >= scrubThreshold && !sifterRevealed) {
+    surface.classList.add('revealed');
+    revealEmotion();
+  }
+}
+
+function revealEmotion() {
+  if (sifterRevealed) return;
+  sifterRevealed = true;
+  
+  const result = document.getElementById('sifter-result');
+  const reveal = document.getElementById('emotion-reveal');
+  const revealText = document.getElementById('reveal-text');
+  const sifterEmoji = document.getElementById('sifter-emotion');
+  const monsterOuter = document.getElementById('monster-outer');
+  const playAgainContainer = document.getElementById('play-again-container');
+  
+  result.style.display = 'block';
+  playAgainContainer.style.display = 'block';
+  
+  // Use current monster's emotion
+  const monster = monsters[currentMonster];
+  sifterEmoji.textContent = monster.innerEmoji;
+  reveal.textContent = monster.innerEmoji;
+  revealText.textContent = monster.innerText;
+  monsterOuter.textContent = monster.emoji;
+  
+  reveal.classList.remove('emotion-reveal');
+  void reveal.offsetWidth;
+  reveal.classList.add('emotion-reveal');
+  
+  playSound('sparkle');
+  
+  // Check if challenges can be completed
+  checkChallenges();
+}
+
+function resetSifter() {
+  scrubAmount = 0;
+  sifterRevealed = false;
+  
+  const surface = document.getElementById('emotion-sifter');
+  const progress = document.getElementById('scrub-progress');
+  const result = document.getElementById('sifter-result');
+  const playAgainContainer = document.getElementById('play-again-container');
+  
+  surface.classList.remove('revealed');
+  progress.style.width = '0%';
+  result.style.display = 'none';
+  playAgainContainer.style.display = 'none';
+}
+
+// ============ SORTER GAME ============
+function selectSortItem(item) {
+  if (item.classList.contains('selected')) {
+    item.classList.remove('selected');
+    selectedSortItem = null;
+  } else {
+    document.querySelectorAll('.sorter-item').forEach(i => i.classList.remove('selected'));
+    item.classList.add('selected');
+    selectedSortItem = item;
+  }
+  playSound('pop');
+}
+
+function dropSortItem(zone) {
+  if (!selectedSortItem) return;
+  
+  const item = selectedSortItem;
+  const correctType = item.dataset.type;
+  
+  // Check if correct zone
+  if (zone === 'frightening' && (correctType === 'frightening' || correctType === 'scared')) {
+    moveToZone(item, 'frightening-zone');
+  } else if (zone === 'friendly' && correctType === 'friendly') {
+    moveToZone(item, 'friendly-zone');
+  } else {
+    // Wrong zone - shake and return
+    item.style.animation = 'wiggle 0.3s ease-in-out';
+    setTimeout(() => item.style.animation = '', 300);
+    playSound('wrong');
+    return;
+  }
+  
+  item.classList.remove('selected');
+  item.onclick = null;
+  item.style.cursor = 'default';
+  selectedSortItem = null;
+  sortDone++;
+  
+  document.getElementById('sort-count').textContent = sortDone;
+  playSound('correct');
+  
+  if (sortDone >= 6) {
+    checkChallenges();
+  }
+}
+
+function moveToZone(item, zoneId) {
+  const zone = document.getElementById(zoneId);
+  zone.appendChild(item);
+}
+
+function checkChallenges() {
+  // Need both sifter done (any monster revealed) AND all 6 sorted
+  if (sifterRevealed && sortDone >= 6) {
+    document.getElementById('challenge-btn').disabled = false;
+    playSound('ready');
+  }
+}
+
+// ============ ACTIVITIES ============
+function completeActivity(card) {
+  if (card.classList.contains('done')) return;
+  
+  card.classList.add('done');
+  activitiesDone++;
+  
+  document.getElementById('activity-count').textContent = activitiesDone;
+  playSound('correct');
+  
+  // Create floating heart
+  const heart = document.createElement('span');
+  heart.textContent = '💚';
+  heart.className = 'heart-float';
+  heart.style.cssText = 'position:fixed;font-size:24px;pointer-events:none;z-index:999;';
+  heart.style.left = card.getBoundingClientRect().left + 'px';
+  heart.style.top = card.getBoundingClientRect().top + 'px';
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 1000);
+  
+  if (activitiesDone >= 3) {
+    document.getElementById('activity-btn').disabled = false;
+  }
+}
+
+// ============ CONFETTI ============
+function showConfetti() {
+  const container = document.getElementById('confetti-container');
+  const colors = ['#7C4DFF', '#00E5A0', '#FFEA00', '#FF5252', '#69F0AE'];
+  
+  for (let i = 0; i < 60; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'confetti-particle';
+    particle.style.left = Math.random() * 100 + 'vw';
+    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+    particle.style.width = (Math.random() * 10 + 5) + 'px';
+    particle.style.height = (Math.random() * 10 + 5) + 'px';
+    particle.style.animationDuration = (Math.random() * 2 + 2) + 's';
+    particle.style.animationDelay = (Math.random() * 2) + 's';
+    container.appendChild(particle);
+    
+    setTimeout(() => particle.remove(), 4000);
+  }
+}
+
+// ============ SOUND EFFECTS ============
+function initAudio() {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioContext.state === 'suspended') {
+    audioContext.resume();
+  }
+}
+
+function playSound(type) {
+  initAudio();
+  
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  const sounds = {
+    step: { freq: 440, duration: 0.1, type: 'sine' },
+    correct: { freq: 523, duration: 0.15, type: 'sine' },
+    wrong: { freq: 200, duration: 0.2, type: 'square' },
+    ready: { freq: 659, duration: 0.2, type: 'sine' },
+    pop: { freq: 800, duration: 0.08, type: 'sine' },
+    sparkle: { freq: 880, duration: 0.3, type: 'sine' },
+    roar: { freq: 150, duration: 0.5, type: 'sawtooth' }
+  };
+  
+  const sound = sounds[type] || sounds.pop;
+  
+  oscillator.type = sound.type;
+  oscillator.frequency.setValueAtTime(sound.freq, audioContext.currentTime);
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + sound.duration);
+  
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + sound.duration);
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
